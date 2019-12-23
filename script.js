@@ -32,6 +32,8 @@ function updatePage(OpenWeatherData) {
 
     var searchresult = OpenWeatherData.response.docs[i];
 
+
+    //add previous searches to unordered sidebar/list
     var $CityList = $("<ul>");
     $CityList.addClass("list-group");
 
@@ -57,6 +59,14 @@ function updatePage(OpenWeatherData) {
     $cityList.append($CityListItem);
 }
 
+//save info from previously searched cities in local storage
+
+$("#submitBtn").on("click", function () {
+    //recognizing the html element hierarchy
+    var value = $(this).siblings("#searchterm").val();
+
+    localStorage.setItem(value);
+})
 
 //figure out how to append 5 day forecast to cards and display icons
 
