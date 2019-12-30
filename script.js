@@ -1,5 +1,6 @@
 $(document).ready(function () {
 
+
     $("#submitBtn").on("click", function (event) {
         event.preventDefault();
         //recognizing the html element hierarchy
@@ -8,15 +9,60 @@ $(document).ready(function () {
         usersearch(value);
     })
 
-    //figure out how to append 5 day forecast to cards and display icons
+    //add previous searches to unordered sidebar/list
+    var CityList = $("#previous-city-list");
+    var cities = []
+    initialize();
+
+    //save info from previously searched cities in local storage
+
+    function initialize() {
+        $("#previous-city-list").empty();
+        var storedCities = JSON.parse(localStorage.getItem("cities"));
+
+        if (storedCities !== null) {
+            cities = storedCities;
+        }
+
+        previousSearches();
+    }
 
 
+    function previousSearches() {
+        for (var i = 0; i < cities.length; i++) {
+
+            var city = cities[i];
+            var li = $("<li>")
+            var button = $("<button>");
+            button.text(city);
+            button.attr("data-index", i);
+            li.append(button)
+            $("#previous-city-list").append(li)
+        }
+
+    };
+
+
+
+    $("#submitBtn").on("click", function (event) {
+        event.preventDefault();
+
+        var searchHistory = $("#searchterm").val().trim();
+        console.log(searchHistory)
+        cities.push(searchHistory)
+        localStorage.setItem("cities", JSON.stringify(cities));
+
+    });
+
+
+
+    //ajax call for user search
     function usersearch(searchterm) {
         var queryURL = "https://api.openweathermap.org/data/2.5/weather?APPID=ab6a4f4bdd7038705bd566a2f9249b85";
 
-        queryURL = queryURL + "&q=" + searchterm;
+        queryURL = queryURL + "&q=" + searchterm
 
-        //    + "&units=imperial"
+            + "&units=imperial";
 
         $.ajax({
             url: queryURL,
@@ -41,9 +87,13 @@ $(document).ready(function () {
 
 
 
+
+
+    //fetch API data from user searchterm
     function buildQueryURL() {
         var searchterm = $("#searchterm").val().trim();
         console.log(searchterm);
+
 
         var APIkey = "ab6a4f4bdd7038705bd566a2f9249b85";
         var OpenWeather = "https://api.openweathermap.org/data/2.5/forecast?"
@@ -55,7 +105,11 @@ $(document).ready(function () {
 
     };
 
+    //current weather day main section
 
+
+
+    //five day weather forecast data tailored to each city
     function updatePage(OpenWeatherData) {
         console.log(OpenWeatherData);
 
@@ -83,34 +137,11 @@ $(document).ready(function () {
 
         }
 
-
-        //add previous searches to unordered sidebar/list
-        var $CityList = $("<ul>");
-        $CityList.addClass("list-group");
-
-        $("#previouscities").append($CityList);
-
-        var cityName = city.name;
-        var $CityListItem = $("<li class='list-group-item cityName'>");
-
-        if (cityName && city.name) {
-            console.log(city.name);
-            $CityListItem.append(
-                "<ul class='list-group list-group-flush'>" +
-                "<strong> " +
-                city.name +
-                "</strong>" + "</ul>"
-            );
-        }
-
-        // $CityListItem.append("<a href='" + city.web_url + "'>" + city.web_url + "</a>");
-        // console.log(city.web_url);
-
-
-        $cityList.append($CityListItem);
     }
 
-    //save info from previously searched cities in local storage
+
 
 
 });
+
+
