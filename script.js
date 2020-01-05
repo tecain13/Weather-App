@@ -52,7 +52,7 @@ $(document).ready(function () {
 
 
 
-    //recover
+    //Recover previous searcbes
     $(".history").on("click", "li", function (event) {
         usersearch($(this).text())
     })
@@ -98,7 +98,6 @@ $(document).ready(function () {
         // var searchterm = $("#searchterm").val().trim();
         console.log(searchterm);
 
-
         var APIkey = "ab6a4f4bdd7038705bd566a2f9249b85";
         var OpenWeather = "https://api.openweathermap.org/data/2.5/forecast?"
         var URL = OpenWeather + "q=" + searchterm + "&APPID=" + APIkey
@@ -125,9 +124,9 @@ $(document).ready(function () {
 
         var img = $("<img>").attr("src", "http://openweathermap.org/img/w/" + icon + ".png")
 
-        var p1 = $("<p>").addClass("card-text").text("temp:" + temp + "F")
-        var p2 = $("<p>").addClass("card-text").text("humidity" + humidity + "%")
-        var p3 = $("<p>").addClass("card-text").text("windspeed" + windspeed + "mph")
+        var p1 = $("<p>").addClass("card-text").text("Temperature: " + temp + "F")
+        var p2 = $("<p>").addClass("card-text").text("Humidity: " + humidity + "%")
+        var p3 = $("<p>").addClass("card-text").text("Windspeed: " + windspeed + "mph")
 
         title.append(img);
         body.append(title, p1, p2, p3)
@@ -137,25 +136,27 @@ $(document).ready(function () {
     }
 
 
+
+    //separate AJAX call for UVIndex
     function UVindex(lat, lon) {
         console.log(lat, lon);
 
 
         var APIkey = "ab6a4f4bdd7038705bd566a2f9249b85";
-        var OpenWeather = "https://api.openweathermap.org/data/2.5/uvi?"
-        var URL = OpenWeather + "lat=" + lat + "&lon=" + lon + "&APPID=" + APIkey
-        console.log(URL);
+        var uvIndex;
+        var uvQueryURL = "https://api.openweathermap.org/data/2.5/uvi?" + "lat=" + data.coord.lat + "&lon=" + data.coord.lon + "&APPID=" + APIkey
 
-        return URL;
-
+        buildCurrentWeatherCardHist();
         $.ajax({
-            url: URL,
+            url: uvQueryURL,
             method: "GET"
-        }).then();
+        }).then(function (response) {
+            uvIndex = response.value;
+            uvIndexDisplay = $("<p>").text("UV Index: " + uvIndexDisplay);
+            $("#currentcity").append(uvIndexDisplay);
+        })
 
-        // incorporate lat/lon
-        //data.value (value from 1 through 10)
-        // (if less than 3, no warning, more than 7 danger button)
+
 
     };
 
@@ -175,13 +176,13 @@ $(document).ready(function () {
                 var humidity = item.main.humidity;
 
                 var col = $("<div>").addClass("col-md-2")
-                var card = $("<div>").addClass("card")
+                var card = $("<div>").addClass("card weather-card col-lg bg-info text-white mr-md-2 mb-3")
                 var body = $("<div>").addClass("card-body p-2")
                 var title = $("<h5>").addClass("card-title").text(new Date(item.dt_txt).toLocaleDateString())
                 var img = $("<img>").attr("src", "http://openweathermap.org/img/w/" + icon + ".png")
 
-                var p1 = $("<p>").addClass("card-text").text("temp:" + temp + "F")
-                var p2 = $("<p>").addClass("card-text").text("humidity" + humidity + "%")
+                var p1 = $("<p>").addClass("card-text").text("Temperature: " + temp + "F")
+                var p2 = $("<p>").addClass("card-text").text("Humidity: " + humidity + "%")
 
                 col.append(card.append(body.append(title, img, p1, p2)));
 
