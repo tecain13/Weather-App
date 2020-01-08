@@ -113,6 +113,8 @@ $(document).ready(function () {
         console.log(data);
 
         var title = $("<h3>").addClass("card-title").text(data.name + " (" + new Date().toLocaleDateString() + ")");
+        var lat = data.coord.lat;
+        var lon = data.coord.lon;
         var icon = data.weather[0].icon;
         var temp = data.main.temp_max;
         var humidity = data.main.humidity;
@@ -132,7 +134,9 @@ $(document).ready(function () {
         body.append(title, p1, p2, p3)
         card.append(body);
         $("#currentcity").append(card);
+        console.log("running uv index");
 
+        UVindex(lat, lon)
     }
 
 
@@ -142,18 +146,23 @@ $(document).ready(function () {
         console.log(lat, lon);
 
 
-        var APIkey = "ab6a4f4bdd7038705bd566a2f9249b85";
-        var uvIndex;
-        var uvQueryURL = "https://api.openweathermap.org/data/2.5/uvi?" + "lat=" + data.coord.lat + "&lon=" + data.coord.lon + "&APPID=" + APIkey
 
-        buildCurrentWeatherCardHist();
+        var APIkey = "ab6a4f4bdd7038705bd566a2f9249b85";
+        var uvIndex = 0;
+        var uvQueryURL = "https://api.openweathermap.org/data/2.5/uvi?" + "lat=" + lat + "&lon=" + lon + "&APPID=" + APIkey
+        console.log(uvQueryURL);
+
+
+        // buildCurrentWeatherCardHist();
         $.ajax({
             url: uvQueryURL,
             method: "GET"
-        }).then(function (response) {
-            uvIndex = response.value;
-            uvIndexDisplay = $("<p>").text("UV Index: " + uvIndexDisplay);
+        }).then(function (res) {
+            console.log(res);
+            uvIndex = res.value;
+            var uvIndexDisplay = $("<p>").text("UV Index: " + uvIndex);
             $("#currentcity").append(uvIndexDisplay);
+
         })
 
 

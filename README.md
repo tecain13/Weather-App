@@ -11,7 +11,7 @@ https://tecain13.github.io/Weather-App/
 ​
 ### Problem
 ​
-Currently, there are a lot of weather apps that provide more information than is necessary, or don't retain information about the weather in cities you've previously searched.
+Currently, there are a lot of weather apps that provide more information than necessary, or don't retain information about the weather in cities you've previously searched.
 ​
 ### Solution
 ​
